@@ -32,10 +32,6 @@ myread.map_values <- function(table_data) {
   return(table_data)
 }
 
-myread.csvtest <- function(filepath) {
-  data = read.table(filepath, header = T, sep = "\t")
-}
-
 #' csvdata
 #' Takes a file_path string to a csv/tsv file and returns a data frame
 #' @author Ferhat Topcu
@@ -156,7 +152,7 @@ developer.changedfiles <- function(tdata) {
   }), decreasing = T))
 }
 
-#' myread.test (2-1 d)
+#' developer.test (2-2)
 #' private function to test functionality of developer
 #' @author Ferhat Topcu
 developer.test <- function(zile = myread.csvdata("src/sheet2/zile.tsv"),
