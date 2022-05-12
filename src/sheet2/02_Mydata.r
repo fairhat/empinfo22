@@ -1,9 +1,9 @@
 
-is_crayon_available = require("crayon")
+is_crayon_available <- require("crayon")
 if (!is_crayon_available) {
   cat("\nInstalling crayon because pretty printing is nicer :-)\n")
   install.packages("crayon")
-} 
+}
 library(crayon)
 
 #' myread.read_file
@@ -58,36 +58,62 @@ myread.analyze_file <- function(file_path) {
   file_info <- file.info(file_path)
 
   cat(yellow("\n\n::: File: ", file_path))
-  cat(red("\n::: Original File Size       : "),
-   ((file_info$size)), blue(" bytes"))
-  cat(red("\n::: Data points (original)   : "),
-   ((nrow(original_file))), blue(" lines"))
-  cat(red("\n::: Data points (mapped)     : "),
-   ((nrow(transformed_file))), blue(" lines"))
-  cat(red("\n::: File size to row ratio   : "),
-   (trunc(file_info$size / nrow(transformed_file))),
-    blue(" bytes per line on avg."))
-  cat(red("\n::: Table columns (original) : "),
-   dimnames(original_file)[[2]])
-  cat(red("\n::: Table columns (mapped)   : "),
-   dimnames(transformed_file)[[2]])
-  cat(red("\n::: Column count is 8        : "),
-   length(dimnames(transformed_file)[[2]]))
-  cat(red("\n::: description is NULL      : "),
-   !("description" %in% dimnames(transformed_file)[[2]]))
-  cat(red("\n::: $developer is string     : "),
-   mode(transformed_file$developer) == "character")
-  cat(red("\n::: $developerf is factor    : "),
-   mode(transformed_file$developerf) == "numeric")
-  cat(red("\n::: $file is string          : "),
-   mode(transformed_file$file) == "character")
-  cat(red("\n::: $filef is factor         : "),
-   mode(transformed_file$filef) == "numeric")
+  cat(
+    red("\n::: Original File Size       : "),
+    ((file_info$size)), blue(" bytes")
+  )
+  cat(
+    red("\n::: Data points (original)   : "),
+    ((nrow(original_file))), blue(" lines")
+  )
+  cat(
+    red("\n::: Data points (mapped)     : "),
+    ((nrow(transformed_file))), blue(" lines")
+  )
+  cat(
+    red("\n::: File size to row ratio   : "),
+    (trunc(file_info$size / nrow(transformed_file))),
+    blue(" bytes per line on avg.")
+  )
+  cat(
+    red("\n::: Table columns (original) : "),
+    dimnames(original_file)[[2]]
+  )
+  cat(
+    red("\n::: Table columns (mapped)   : "),
+    dimnames(transformed_file)[[2]]
+  )
+  cat(
+    red("\n::: Column count is 8        : "),
+    length(dimnames(transformed_file)[[2]])
+  )
+  cat(
+    red("\n::: description is NULL      : "),
+    !("description" %in% dimnames(transformed_file)[[2]])
+  )
+  cat(
+    red("\n::: $developer is string     : "),
+    mode(transformed_file$developer) == "character"
+  )
+  cat(
+    red("\n::: $developerf is factor    : "),
+    mode(transformed_file$developerf) == "numeric"
+  )
+  cat(
+    red("\n::: $file is string          : "),
+    mode(transformed_file$file) == "character"
+  )
+  cat(
+    red("\n::: $filef is factor         : "),
+    mode(transformed_file$filef) == "numeric"
+  )
   cat("\n")
 
-  return(list(file = original_file,
+  return(list(
+    file = original_file,
     mapped = transformed_file,
-    info = file_info))
+    info = file_info
+  ))
 }
 
 #' myread.test (2-1 d)
@@ -129,7 +155,7 @@ developer.count <- function(tdata) length(levels(tdata$developerf))
 
 #' developer.busy
 #' @param tdata tabular data.frame extracted from myread.csvdata
-#' @return sorted table of up to 5 most active devs 
+#' @return sorted table of up to 5 most active devs
 developer.busy <- function(tdata) {
   devs <- sort(table(tdata$developerf), decreasing = T)
 
@@ -156,10 +182,10 @@ developer.changedfiles <- function(tdata) {
 #' private function to test functionality of developer
 #' @author Ferhat Topcu
 developer.test <- function(zile = myread.csvdata("src/sheet2/zile.tsv"),
-                        jikes = myread.csvdata("src/sheet2/jikes.tsv"),
-                        junit = myread.csvdata("src/sheet2/junit.tsv"),
-                        junit20 = myread.csvdata("src/sheet2/junit20.tsv"),
-                        smry = T) {
+                           jikes = myread.csvdata("src/sheet2/jikes.tsv"),
+                           junit = myread.csvdata("src/sheet2/junit.tsv"),
+                           junit20 = myread.csvdata("src/sheet2/junit20.tsv"),
+                           smry = T) {
   cat(cyan("Running developer tests for files: "))
   cat(yellow("\n\n::: File: ", "zile.tsv"))
   cat(red("\n::: Amount of devs       : "), developer.count(zile))
