@@ -293,6 +293,40 @@ myplot.participation <- function(tdata, title = "-", ...) {
   ))
 }
 
+#' myplot.participation.test
+#' 3-2 (d)
+#' INTERPRETATION:
+#' we can see on zile that
+#' ~80% of contributions (lines added, deleted and commit count)
+#' was done by just one developer which we can classify as lead developer(?)
+#'
+#' For Jikes, which has the highest individual count (8), we see that
+#' the lead developer amounts for ~70% of lines added and deleted
+#' but only 45% of commits. So we can conclude that many of the
+#' remaining contributors have worked on small issues and
+#' minor changes while the first 3 devs are working on over 80% of the codebase
+#' and 90% of the lines added and deleted
+#'
+#' JUnit has the highest diversity in participation:
+#' The lead developer has the highest commit count (over 60%),
+#' but only amounts for less than 50%
+#' of lines added and just above 50% of lines deleted.
+#' But even in this case the two most active devs have
+#' over 80%  total contribution and slightly over 70% of lines added and deleted
+#' So ~30% of devs amount for over 70% of the work
+#'
+#' Junit20 is a very small sample size compared
+#' to the other projects and it basically
+#' looks like it's a single developer doing over 80% of the work
+#'
+#' Interpretation of all results:
+#' From the given open source projects we can conclude that
+#' the most active 1-3 developers in a project
+#' amount for at least 70% of the work being done.
+#' This is true for commit count, total lines added and total lines deleted
+#' However given the small sample size (4 projects) and also the small amount
+#' of developers (4.5 on avg, minimum of 2 and maximum of 8) we don't know if
+#' this would be true for bigger oss projects (in terms of dev count)
 myplot.participation.test <- function (
       zile = myread.csvdata("src/data/zile.tsv"),
       jikes = myread.csvdata("src/data/jikes.tsv"),
