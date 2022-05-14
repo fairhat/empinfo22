@@ -1,5 +1,5 @@
 
-is_crayon_available = require("crayon")
+is_crayon_available <- require("crayon")
 if (!is_crayon_available) {
   cat("\nInstalling crayon because pretty printing is nicer :-)\n")
   install.packages("crayon")
@@ -7,7 +7,7 @@ if (!is_crayon_available) {
 library(crayon)
 
 
-is_lattice_available = require("lattice")
+is_lattice_available <- require("lattice")
 if (!is_lattice_available) {
   cat("\nInstalling Lattice\n")
   install.packages("lattice")
@@ -16,7 +16,7 @@ library(lattice)
 
 #' myread.read_file
 #' read csv/tsv file as data.frame
-#' 
+#'
 #' @param file_path the path string to the file
 #' @param header is the first line the column definition?
 #' @param separator defaults to tab separator \t
@@ -28,7 +28,7 @@ myread.read_file <- function(file_path, header = T, separator = "\t") {
 
 #' myread.map_values
 #' map values to expected data format
-#' 
+#'
 #' @param table_data data.frame returned from myread.read_file
 #' @return table_data as transformed data.frame
 myread.map_values <- function(table_data) {
@@ -41,21 +41,30 @@ myread.map_values <- function(table_data) {
   table_data$tstamp3 <- as.numeric(table_data$tstamp2) # timestamp as numeric
   table_data$wday <- factor(sapply(table_data$tstamp2, function(d) {
     (weekdays(d))
-  }), levels = c(
+  }),
+  levels = c(
     "Montag", "Dienstag", "Mittwoch",
     "Donnerstag", "Freitag", "Samstag",
-    "Sonntag"), labels = c("mon", "tue", "wed", "thu", "fri", "sat", "sun")) # timestamp as weekday
+    "Sonntag"
+  ),
+  labels = c(
+    "mon",
+    "tue", "wed", "thu", "fri", "sat", "sun"
+  )
+  ) # timestamp as weekday
   table_data$hour <- factor(
     sapply(as.POSIXlt(table_data$tstamp), function(d) {
       as.numeric(format(strptime(d, "%Y-%m-%d %H:%M:%S"), "%H"))
-  }), levels = c(0:23))
+    }),
+    levels = c(0:23)
+  )
 
   return(table_data)
 }
 
 #' csvdata
 #' Takes a file_path string to a csv/tsv file and returns a data frame
-#' 
+#'
 #' @param file_path the path string to the file
 #' @param header is the first line the column definition?
 #' @param separator defaults to tab separator \t
@@ -67,7 +76,7 @@ myread.csvdata <- function(file_path, header = T, separator = "\t") {
 
 #' myread.test (2-1 d)
 #' private function to test functionality of myread
-#' 
+#'
 myread.test <- function(zile = "src/data/zile.tsv",
                         jikes = "src/data/jikes.tsv",
                         junit = "src/data/junit.tsv",
@@ -186,31 +195,119 @@ myplot.wdays.bars <- function(tdata, title = "-", ...) {
 #' Plots lines added per dev (log base 2) as boxplot
 myplot.lines_add.devs.boxplot <- function(tdata, title = "-", ...) {
   return(bwplot(
-    tdata$developer~log(
+    tdata$developer ~ log(
       tdata$lines_add + 1, 2
     ),
-  # scales = list(draw = FALSE),
-  aspect = "iso",
-  ylab = "Developer",
-  xlab = "Lines added (log base 2)",
-  main = "Developer to lines added ratio",
-  sub = title,
-  ...))
+    # scales = list(draw = FALSE),
+    aspect = "iso",
+    ylab = "Developer",
+    xlab = "Lines added (log base 2)",
+    main = "Developer to lines added ratio",
+    sub = title,
+    ...
+  ))
+}
+
+
+#' myplot.lines_add.devs.boxplot
+#' Plots lines added per dev (log base 10) as boxplot
+myplot.lines_add.devs.boxplot_alt <- function(tdata, title = "-", ...) {
+  return(bwplot(
+    tdata$developer | (
+      tdata$lines_add
+    ),
+    # scales = list(draw = FALSE),
+    aspect = "iso",
+    ylab = "Developer",
+    xlab = "Lines added (log base 10)",
+    main = "Developer to lines added ratio",
+    sub = title,
+    ...
+  ))
 }
 
 #' myplot.lines_add.devs.densityplot
 #' plots lines added per dev (log base 2) as densityplot
 myplot.lines_add.devs.densityplot <- function(tdata, title = "-", ...) {
-  return (densityplot(
-      ~log(tdata$lines_add + 1, 2)|tdata$developer,
-      width = 1,
-      # scales = list(draw = FALSE),
-      main = "Density Graph of lines added per developer",
-      xlab = "Lines added (log base 2)",
-      sub = title,
-      ...
+  return(densityplot(
+    ~ log(tdata$lines_add + 1, 2) | tdata$developer,
+    width = 1,
+    # scales = list(draw = FALSE),
+    main = "Density Graph of lines added per developer",
+    xlab = "Lines added (log base 2)",
+    sub = title,
+    ...
+  ))
+}
+
+myplot.participation <- function(tdata, title = "-", ...) {
+  ladd <- cumsum(
+    sort(
+      tapply(tdata$lines_add, tdata$developerf, sum),
+    decreasing = T)
+  )
+
+  ldel <- cumsum(
+    sort(
+      tapply(tdata$lines_del, tdata$developerf, sum),
+    decreasing = T)
+  )
+
+  lcom <- cumsum(
+    sort(
+      tapply(tdata$developerf, tdata$developerf, length),
+      decreasing = T
     )
   )
+
+  total_ladd <- tail(ladd, n = 1)
+  total_ldel <- tail(ldel, n = 1)
+  total_cmts <- tail(lcom, n = 1)
+
+  participation_ladd <- c(nil = 0,
+    sapply(ladd, FUN = function(x) x / total_ladd))
+  participation_ldel <- c(nil = 0,
+    sapply(ldel, FUN = function(x) x / total_ldel))
+  participation_delta <- c(nil = 0,
+    sapply(lcom, FUN = function(x) x / total_cmts))
+
+  devcount <- (0:length((ladd)))
+
+  df <- data.frame(
+    lines_added = participation_ladd,
+    lines_deleted = participation_ldel,
+    delta = participation_delta,
+    x = devcount
+  )
+
+  return(xyplot(
+    lines_added + lines_deleted + delta ~ x,
+    data = df,
+    type = c("p", "l"),
+    auto.key = T,
+    main = title,
+    lty = 1:3,
+    xlab = "Individuals",
+    ylab = "Participation",
+    ...
+  ))
+}
+
+myplot.participation.test <- function (
+      zile = myread.csvdata("src/data/zile.tsv"),
+      jikes = myread.csvdata("src/data/jikes.tsv"),
+      junit = myread.csvdata("src/data/junit.tsv"),
+      junit20 = myread.csvdata("src/data/junit20.tsv")) {
+  X11(width = 12, pointsize = 6, title = "Participation plots")
+  zilePlot <- myplot.participation(zile, title = "Zile Participation")
+  jikesPlot <- myplot.participation(jikes, title = "Jikes Participation")
+  junitPlot <- myplot.participation(junit, title = "JUnit Participation")
+  junit20Plot <- myplot.participation(junit20, title = "JUnit20 Participation")
+
+  print(zilePlot, split = c(1, 1, 2, 2), more = T)
+  print(jikesPlot, split = c(2, 1, 2, 2), more = T)
+  print(junitPlot, split = c(1, 2, 2, 2), more = T)
+  print(junit20Plot, split = c(2, 2, 2, 2), more = F)
 }
 
 #' myplot.test
@@ -218,9 +315,9 @@ myplot.lines_add.devs.densityplot <- function(tdata, title = "-", ...) {
 #' a window for each with all 4 plots
 #' NOTE: Spawns 4 windows(!)
 myplot.test <- function(zile = myread.csvdata("src/data/zile.tsv"),
-                           jikes = myread.csvdata("src/data/jikes.tsv"),
-                           junit = myread.csvdata("src/data/junit.tsv"),
-                           junit20 = myread.csvdata("src/data/junit20.tsv")) {
+                        jikes = myread.csvdata("src/data/jikes.tsv"),
+                        junit = myread.csvdata("src/data/junit.tsv"),
+                        junit20 = myread.csvdata("src/data/junit20.tsv")) {
   ## ZILE
   zilePlot1 <- myplot.hours.bars(zile, title = "Zile")
   zilePlot2 <- myplot.wdays.bars(zile, title = "Zile")
