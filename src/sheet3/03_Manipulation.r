@@ -58,6 +58,8 @@ myread.map_values <- function(table_data) {
     }),
     levels = c(0:23)
   )
+  # table_data$lines_del <- as.factor(table_data$lines_del)
+  # table_data$lines_add <- as.factor(table_data$lines_add)
 
   return(table_data)
 }
@@ -83,7 +85,6 @@ myread.test <- function(zile = "src/data/zile.tsv",
                         junit20 = "src/data/junit20.tsv",
                         smry = T) {
   data <- myread.csvdata(junit20)
-  # return(raw.hours(data))
   return(data)
 }
 
@@ -209,18 +210,17 @@ myplot.lines_add.devs.boxplot <- function(tdata, title = "-", ...) {
 }
 
 
-#' myplot.lines_add.devs.boxplot
-#' Plots lines added per dev (log base 10) as boxplot
-myplot.lines_add.devs.boxplot_alt <- function(tdata, title = "-", ...) {
+#' myplot.lines_del.devs.boxplot
+#' Plots lines deleted per dev as boxplot
+myplot.lines_del.devs.boxplot <- function(tdata, title = "-", ...) {
   return(bwplot(
-    tdata$developer | (
-      tdata$lines_add
+    tdata$developer ~ log(
+      tdata$lines_del + 1, 2
     ),
-    # scales = list(draw = FALSE),
     aspect = "iso",
     ylab = "Developer",
-    xlab = "Lines added (log base 10)",
-    main = "Developer to lines added ratio",
+    xlab = "Lines deleted (log base 2)",
+    main = "Developer to lines deleted ratio",
     sub = title,
     ...
   ))
@@ -228,14 +228,20 @@ myplot.lines_add.devs.boxplot_alt <- function(tdata, title = "-", ...) {
 
 #' myplot.lines_add.devs.densityplot
 #' plots lines added per dev (log base 2) as densityplot
-myplot.lines_add.devs.densityplot <- function(tdata, title = "-", ...) {
+myplot.lines_add.devs.densityplot <- function(
+    tdata,
+    title = "-",
+    width = 1,
+    adjust = 0,
+    ...) {
   return(densityplot(
     ~ log(tdata$lines_add + 1, 2) | tdata$developer,
-    width = 1,
+    width,
     # scales = list(draw = FALSE),
     main = "Density Graph of lines added per developer",
     xlab = "Lines added (log base 2)",
     sub = title,
+    adjust,
     ...
   ))
 }
@@ -268,7 +274,7 @@ myplot.participation <- function(tdata, title = "-", ...) {
     sapply(ladd, FUN = function(x) x / total_ladd))
   participation_ldel <- c(nil = 0,
     sapply(ldel, FUN = function(x) x / total_ldel))
-  participation_delta <- c(nil = 0,
+  participation_commits <- c(nil = 0,
     sapply(lcom, FUN = function(x) x / total_cmts))
 
   devcount <- (0:length((ladd)))
@@ -276,12 +282,12 @@ myplot.participation <- function(tdata, title = "-", ...) {
   df <- data.frame(
     lines_added = participation_ladd,
     lines_deleted = participation_ldel,
-    delta = participation_delta,
+    commits = participation_commits,
     x = devcount
   )
 
   return(xyplot(
-    lines_added + lines_deleted + delta ~ x,
+    lines_added + lines_deleted + commits ~ x,
     data = df,
     type = c("p", "l"),
     auto.key = T,
@@ -295,38 +301,7 @@ myplot.participation <- function(tdata, title = "-", ...) {
 
 #' myplot.participation.test
 #' 3-2 (d)
-#' INTERPRETATION:
-#' we can see on zile that
-#' ~80% of contributions (lines added, deleted and commit count)
-#' was done by just one developer which we can classify as lead developer(?)
-#'
-#' For Jikes, which has the highest individual count (8), we see that
-#' the lead developer amounts for ~70% of lines added and deleted
-#' but only 45% of commits. So we can conclude that many of the
-#' remaining contributors have worked on small issues and
-#' minor changes while the first 3 devs are working on over 80% of the codebase
-#' and 90% of the lines added and deleted
-#'
-#' JUnit has the highest diversity in participation:
-#' The lead developer has the highest commit count (over 60%),
-#' but only amounts for less than 50%
-#' of lines added and just above 50% of lines deleted.
-#' But even in this case the two most active devs have
-#' over 80%  total contribution and slightly over 70% of lines added and deleted
-#' So ~30% of devs amount for over 70% of the work
-#'
-#' Junit20 is a very small sample size compared
-#' to the other projects and it basically
-#' looks like it's a single developer doing over 80% of the work
-#'
-#' Interpretation of all results:
-#' From the given open source projects we can conclude that
-#' the most active 1-3 developers in a project
-#' amount for at least 70% of the work being done.
-#' This is true for commit count, total lines added and total lines deleted
-#' However given the small sample size (4 projects) and also the small amount
-#' of developers (4.5 on avg, minimum of 2 and maximum of 8) we don't know if
-#' this would be true for bigger oss projects (in terms of dev count)
+#' Interpretation is on sheet pdf
 myplot.participation.test <- function (
       zile = myread.csvdata("src/data/zile.tsv"),
       jikes = myread.csvdata("src/data/jikes.tsv"),
@@ -342,6 +317,41 @@ myplot.participation.test <- function (
   print(jikesPlot, split = c(2, 1, 2, 2), more = T)
   print(junitPlot, split = c(1, 2, 2, 2), more = T)
   print(junit20Plot, split = c(2, 2, 2, 2), more = F)
+}
+
+myplot.box.test <- function (
+  zile = myread.csvdata("src/data/zile.tsv"),
+  jikes = myread.csvdata("src/data/jikes.tsv"),
+  junit = myread.csvdata("src/data/junit.tsv"),
+  junit20 = myread.csvdata("src/data/junit20.tsv")
+) {
+  zilePlot1 <- myplot.lines_add.devs.boxplot(zile, title = "Zile")
+  zilePlot2 <- myplot.lines_del.devs.boxplot(zile, title = "Zile")
+
+  jikesPlot1 <- myplot.lines_add.devs.boxplot(jikes, title = "Jikes")
+  jikesPlot2 <- myplot.lines_del.devs.boxplot(jikes, title = "Jikes")
+  
+  junitPlot1 <- myplot.lines_add.devs.boxplot(junit, title = "JUnit")
+  junitPlot2 <- myplot.lines_del.devs.boxplot(junit, title = "JUnit")
+
+  junit20Plot1 <- myplot.lines_add.devs.boxplot(junit20, title = "JUnit20")
+  junit20Plot2 <- myplot.lines_del.devs.boxplot(junit20, title = "JUnit20")
+
+  X11(width = 12, pointsize = 6, title = "Boxplots (Zile)")
+  print(zilePlot1, split = c(1, 1, 1, 2), more = T)
+  print(zilePlot2, split = c(1, 2, 1, 2), more = F)
+
+  X11(width = 12, pointsize = 6, title = "Boxplots (Jikes)")
+  print(jikesPlot1, split = c(1, 1, 1, 2), more = T)
+  print(jikesPlot2, split = c(1, 2, 1, 2), more = F)
+
+  X11(width = 12, pointsize = 6, title = "Boxplots (JUnit)")
+  print(junitPlot1, split = c(1, 1, 1, 2), more = T)
+  print(junitPlot2, split = c(1, 2, 1, 2), more = F)
+
+  X11(width = 12, pointsize = 6, title = "Boxplots (JUnit20)")
+  print(junit20Plot1, split = c(1, 1, 1, 2), more = T)
+  print(junit20Plot2, split = c(1, 2, 1, 2), more = F)
 }
 
 #' myplot.test
