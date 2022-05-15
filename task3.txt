@@ -114,12 +114,19 @@ Zile: work days: 1869; weekend: 665 => there are a lot more commits during workd
 At which hour is the sum of commits from all projects the highest?
 -> At 1 am there have been 21 + 486 + 268 = 775 commits.
 
+=> Junit could be a project by developers who work in their freetime because they work during evening/night too, and especially at weekends.
+=> Jikes could be a global large open source project because there are high commit rates at each hour (considering different time zones) almost every day.
+=> Zile could be a global open source project because there are high commit rates at many hours (considering different time zones) every day.
 
 
 3.2:
 
 a)
+plot.default draws a scatter plot that can contain labels for axes and a title.
+plot.table is a version of plot.default for table input parameters that creates a bar plot for one dimensional tables, and a mosaic plot for tables with a dimension higher than 1.
+plot.factor is a version of plot.default for factor input parameters and it creates a bar plot for one dimensional factors, a box plot if numeric values are used in the second dimension of the input, and a spine plot if factors are used in the second dimension of the input.
 
+Seeing the hourly and weekly activities from 3.1 d) graphically doesn't make a difference to us. We can't find new conclusions about the projects.
 
 b)
 
