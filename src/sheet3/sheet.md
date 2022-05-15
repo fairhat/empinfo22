@@ -45,7 +45,7 @@ Time difference of -808.9428 days
 [17] "1970-01-01 UTC" "1970-01-01 UTC" "1970-01-01 UTC" "1970-01-01 UTC"
 ```
 
-tstamp2 is a POSIXct object using the following structure for each element: "y-m-d h:m:s UTC"  
+tstamp2 is a POSIXct object using the following structure for each element: ```"y-m-d h:m:s UTC"```  
 tstamp3 is a numeric value in seconds, which is added on the base date of 1.1.1970. The tstamp3  
 elements represent the same date index-wise as the tstamp2 elements do, e.g.   
 junit20$tstamp3[1] = 1100732848 = "2004-11-17 23:07:28 UTC" = junit20$tstamp2[1].  
@@ -125,7 +125,11 @@ Zile: work days: 1869; weekend: 665 => there are a lot more commits during workd
 At which hour is the sum of commits from all projects the highest?
 ```
 -> At 1 am there have been 21 + 486 + 268 = 775 commits.
-
+```
+  
+  
+Conclusions
+```
 => Junit could be a project by developers who work in their freetime because they work during evening/night too, and especially at weekends.
 => Jikes could be a global large open source project because there are high commit rates at each hour (considering different time zones) almost every day.
 => Zile could be a global open source project because there are high commit rates at many hours (considering different time zones) every day.
