@@ -54,6 +54,67 @@ from each other, which are given in 2 different formats.
 
 1d)
 
+> junit = myread.csvdata("src/data/junit.tsv")
+> zile = myread.csvdata("src/data/zile.tsv")
+> jikes = myread.csvdata("src/data/jikes.tsv")
+
+> raw.hours(junit)
+
+::: Raw Hours 
+hour     :    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23 
+commits  :   82   21   32    3    8    5   10   10    8   10    1    0    0    2    1  187    2   14   20    3   30   45    9  120 
+> raw.hours(jikes)
+
+::: Raw Hours 
+hour     :    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23 
+commits  :  261  486  215  190  233  294  276  324  257  144  256   64   55  340  368  415  241  245  372  245  354  415  398  174 
+> raw.hours(zile)
+
+::: Raw Hours 
+hour     :    0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23 
+commits  :  353  268  227  102   19   49    0    0   21    2   13   50   38   82  115  101   44  192  114  107   43  117  127  350 
+> raw.weekdays(junit)
+
+::: Raw Weekdays 
+day      :  mon  tue  wed  thu  fri  sat  sun 
+commits  :   61   30   83   65   47  103  234 
+> raw.weekdays(jikes)
+
+::: Raw Weekdays 
+day      :  mon  tue  wed  thu  fri  sat  sun 
+commits  :  761 1142 1432  931 1202  704  450 
+> raw.weekdays(zile)
+
+::: Raw Weekdays 
+day      :  mon  tue  wed  thu  fri  sat  sun 
+commits  :  458  276  410  312  413  313  352
+
+
+Where are the minimum and maximum values (i.e., hours/weekdays of particularly high or low activity)?
+Junit: high activity: around hours 15, 23 and 0; weekdays sun, sat
+       low activity: around hours 3, 10-14, 16 and 19; weekdays tue, fri
+Jikes: high activity: around hours 1, 15 and 21; weekdays wed, fri, tue
+       low activity: around hours 12 and 11; weekdays sun
+Zile: high activity: around hours 0 and 23; weekdays mon
+       low activity: around hours 6, 7 and 9; weekdays tue
+
+
+How much smaller or bigger are peak values compared to the average?
+Junit: average commits per hour: ~26 -> peak values: 0, 187; average commits per day: 89 -> peak values: 30, 234
+Jikes: average commits per hour: ~276 -> peak values: 55, 486; average commits per day: 946 -> peak values: 450, 1432
+Zile: average commits per hour: ~106 -> peak values: 0, 353; average commits per day: 362 -> peak values: 276, 458
+
+
+Are there more commits during work days or weekend?
+Junit: work days: 286; weekend: 337 => there are a bit more commits during weekend.
+Jikes: work days: 5468; weekend: 1154 => there are a lot more commits during workdays.
+Zile: work days: 1869; weekend: 665 => there are a lot more commits during workdays.
+
+
+At which hour is the sum of commits from all projects the highest?
+-> At 1 am there have been 21 + 486 + 268 = 775 commits.
+
+
 
 3.2:
 
