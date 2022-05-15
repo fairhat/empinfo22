@@ -1,5 +1,5 @@
 # Sheet 3
-### Abgabe:
+### Abgabe: Ferhat Topcu, Felix Sekul
 
 ## 3-1
 ### (c)
@@ -127,7 +127,7 @@ At which hour is the sum of commits from all projects the highest?
 -> At 1 am there have been 21 + 486 + 268 = 775 commits.
 ```
   
-  
+
 Conclusions
 ```
 => Junit could be a project by developers who work in their freetime because they work during evening/night too, and especially at weekends.

@@ -232,16 +232,14 @@ myplot.lines_add.devs.densityplot <- function(
     tdata,
     title = "-",
     width = 1,
-    adjust = 0,
     ...) {
   return(densityplot(
     ~ log(tdata$lines_add + 1, 2) | tdata$developer,
-    width,
+    width = width,
     # scales = list(draw = FALSE),
     main = "Density Graph of lines added per developer",
     xlab = "Lines added (log base 2)",
     sub = title,
-    adjust,
     ...
   ))
 }
